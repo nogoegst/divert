@@ -39,7 +39,10 @@ type Conn struct {
 
 func (c *Conn) Read(b []byte) (int, error) {
 	n, _, err := syscall.Recvfrom(c.fd, b, 0)
-	return n, err
+	if err != nil {
+		return 0, os.NewSyscallError("socket", err)
+	}
+	return n, nil
 }
 
 func (c *Conn) Write(b []byte) (int, error) {
